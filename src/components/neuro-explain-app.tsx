@@ -503,7 +503,7 @@ function NeuralBackground({ frameValue, scaleVal, xVal, yVal }: { frameValue: Mo
         startNextLoad();
       };
 
-      img.src = `/frames.jpg/ezgif-frame-${numStr}.jpg`;
+      img.src = `/NeuroExplain/frames.jpg/ezgif-frame-${numStr}.jpg`;
     };
 
     // Spin up concurrent load pipelines
