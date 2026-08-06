@@ -1,0 +1,65 @@
+
+> lint
+> eslint .
+
+
+C:\Users\ARJUN VARMA\Downloads\neuroexplain-eeg-seizure-platform\src\components\neuro-explain-app.tsx
+  502:11  error    Error: Cannot access variable before it is declared
+
+`drawFrame` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Users\ARJUN VARMA\Downloads\neuroexplain-eeg-seizure-platform\src\components\neuro-explain-app.tsx:502:11
+  500 |         // Draw first frame immediately once it loads
+  501 |         if (frameNum === 1 && !isAnimatingRef.current) {
+> 502 |           drawFrame(0);
+      |           ^^^^^^^^^ `drawFrame` accessed before it is declared
+  503 |         }
+  504 |
+  505 |         // Draw current scroll position frame if we just loader-retrieved it
+
+C:\Users\ARJUN VARMA\Downloads\neuroexplain-eeg-seizure-platform\src\components\neuro-explain-app.tsx:562:3
+  560 |
+  561 |   // Draw the given frame to the canvas using a high quality center-cover scaling
+> 562 |   const drawFrame = (frameIndex: number) => {
+      |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 563 |     const canvas = canvasRef.current;
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 564 |     if (!canvas) return;
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 603 |     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 604 |   };
+      | ^^^^^ `drawFrame` is declared here
+  605 |
+  606 |   useEffect(() => {
+  607 |     const handleScrollAndResize = () => {  react-hooks/immutability
+  536:6   warning  React Hook useEffect has a missing dependency: 'drawFrame'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  react-hooks/exhaustive-deps
+  660:6   warning  React Hook useEffect has a missing dependency: 'drawFrame'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  react-hooks/exhaustive-deps
+  838:11  error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\ARJUN VARMA\Downloads\neuroexplain-eeg-seizure-platform\src\components\neuro-explain-app.tsx:838:11
+  836 |   async function onCreatePatient(data: PatientForm) {
+  837 |     const localPatient: DashboardPatient = {
+> 838 |       id: Date.now(),
+      |           ^^^^^^^^^^ Cannot call impure function
+  839 |       externalId: `NX-${Date.now().toString().slice(-7)}`,
+  840 |       name: data.name,
+  841 |       age: Number(data.age),                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  react-hooks/purity
+  839:25  error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\ARJUN VARMA\Downloads\neuroexplain-eeg-seizure-platform\src\components\neuro-explain-app.tsx:839:25
+  837 |     const localPatient: DashboardPatient = {
+  838 |       id: Date.now(),
+> 839 |       externalId: `NX-${Date.now().toString().slice(-7)}`,
+      |                         ^^^^^^^^^^ Cannot call impure function
+  840 |       name: data.name,
+  841 |       age: Number(data.age),
+  842 |       sex: data.sex,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     react-hooks/purity
+
+✖ 5 problems (3 errors, 2 warnings)
+
