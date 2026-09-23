@@ -14,8 +14,7 @@
   border-radius: 0.875rem;
   background-color: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0.35rem 0.5rem;
-  height: 54px;
+  padding: 0.45rem 0.6rem;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
@@ -34,12 +33,14 @@
     inset 0 1px 1px rgba(255, 255, 255, 0.05);
   cursor: pointer;
   outline: none;
-  color: #94a3b8; /* Tailwind slate-400 */
+  color: #94a3b8;
+  /* Tailwind slate-400 */
   transition: border-color 0.3s, color 0.3s, background-color 0.3s, box-shadow 0.3s;
 }
 
 .dock-item:hover {
-  border-color: rgba(6, 182, 212, 0.4); /* Cyan-400 */
+  border-color: rgba(6, 182, 212, 0.4);
+  /* Cyan-400 */
   background-color: rgba(6, 182, 212, 0.08);
   color: #fff;
   box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
@@ -47,7 +48,8 @@
 
 .dock-icon {
   display: flex;
-  flex-direction: column; /* Stack icon and text */
+  flex-direction: column;
+  /* Stack icon and text */
   align-items: center;
   justify-content: center;
   gap: 2px;

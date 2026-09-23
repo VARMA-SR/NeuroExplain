@@ -1,12 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --background: #050816;
-  --primary: #2563eb;
-  --secondary: #7c3aed;
-  --accent: #06b6d4;
-  --card: rgba(255, 255, 255, 0.08);
-  --border: rgba(255, 255, 255, 0.15);
+  --background: #fdfbf7;
+  --primary: #006d77;
+  --secondary: #83c5be;
+  --accent: #006d77;
+  --card: rgba(131, 197, 190, 0.1);
+  --border: rgba(131, 197, 190, 0.2);
+}
+
+@theme {
+  --color-cream: #fdfbf7;
+  --color-cream-dark: #f0ebe1;
+  --color-dusty-blue: #83c5be;
+  --color-dusty-dark: #006d77;
+  --color-navy: #004d56;
 }
 
 * {
@@ -21,10 +29,10 @@ body {
   margin: 0;
   overflow-x: hidden;
   background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.26), transparent 34rem),
-    radial-gradient(circle at 82% 18%, rgba(124, 58, 237, 0.2), transparent 30rem),
-    radial-gradient(circle at 48% 52%, rgba(6, 182, 212, 0.12), transparent 36rem),
-    #050816;
+    radial-gradient(circle at top left, rgba(131, 197, 190, 0.25), transparent 40rem),
+    radial-gradient(circle at 82% 18%, rgba(0, 109, 119, 0.15), transparent 35rem),
+    radial-gradient(circle at 48% 52%, rgba(131, 197, 190, 0.2), transparent 40rem),
+    var(--background);
 }
 
 button,
@@ -41,9 +49,9 @@ a {
 }
 
 .glass-panel {
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.055));
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(131, 197, 190, 0.4);
+  background: linear-gradient(145deg, rgba(253, 251, 247, 0.9), rgba(253, 251, 247, 0.75));
+  box-shadow: 0 12px 40px rgba(0, 109, 119, 0.15), inset 0 1px 0 rgba(255, 255, 255, 1);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   transform: translate3d(0, 0, 0);
@@ -62,15 +70,15 @@ a {
   inset: -1px;
   z-index: -1;
   border-radius: inherit;
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.72), rgba(124, 58, 237, 0.45), rgba(6, 182, 212, 0.65));
-  opacity: 0.42;
+  background: linear-gradient(135deg, rgba(131, 197, 190, 0.5), rgba(0, 109, 119, 0.4), rgba(131, 197, 190, 0.5));
+  opacity: 0.8;
   filter: blur(14px);
 }
 
 .neural-grid {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
   background-size: 44px 44px;
   mask-image: radial-gradient(circle at center, black, transparent 72%);
 }
@@ -85,7 +93,7 @@ a {
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.16), transparent);
+  background: linear-gradient(90deg, transparent, rgba(131, 197, 190, 0.25), transparent);
   animation: scan 4.8s ease-in-out infinite;
 }
 
@@ -93,6 +101,7 @@ a {
   0% {
     transform: translateX(-110%);
   }
+
   55%,
   100% {
     transform: translateX(110%);
@@ -100,21 +109,25 @@ a {
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0) rotate(0deg);
   }
+
   50% {
     transform: translateY(-18px) rotate(2deg);
   }
 }
 
 @keyframes pulseGlow {
+
   0%,
   100% {
     opacity: 0.42;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.9;
     transform: scale(1.04);
@@ -139,7 +152,7 @@ a {
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
@@ -148,6 +161,7 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -174,5 +188,15 @@ a {
     background: white !important;
     color: #0f172a !important;
     box-shadow: none !important;
+  }
+}
+
+@keyframes scanVertical {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(1000%);
   }
 }

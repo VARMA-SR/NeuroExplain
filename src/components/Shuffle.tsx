@@ -45,10 +45,17 @@ const Shuffle = ({
   const hoverHandlerRef = useRef(null);
 
   useEffect(() => {
+    let mounted = true;
     if ('fonts' in document) {
-      if (document.fonts.status === 'loaded') setFontsLoaded(true);
-      else document.fonts.ready.then(() => setFontsLoaded(true));
-    } else setFontsLoaded(true);
+      if (document.fonts.status === 'loaded') {
+        queueMicrotask(() => { if (mounted) setFontsLoaded(true); });
+      } else {
+        document.fonts.ready.then(() => { if (mounted) setFontsLoaded(true); });
+      }
+    } else {
+      queueMicrotask(() => { if (mounted) setFontsLoaded(true); });
+    }
+    return () => { mounted = false; };
   }, []);
 
   const scrollTriggerStart = useMemo(() => {

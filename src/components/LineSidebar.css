@@ -60,6 +60,12 @@
   opacity: calc(0.55 + var(--effect, 0) * 0.45);
 }
 
+.line-sidebar__item[aria-current="true"] .line-sidebar__label {
+  color: var(--accent-color);
+  font-weight: 700;
+  font-size: 0.9em;
+}
+
 .line-sidebar__marker {
   position: absolute;
   top: 50%;
