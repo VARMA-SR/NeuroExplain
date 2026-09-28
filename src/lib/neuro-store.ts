@@ -189,7 +189,7 @@ async function seedDemoData() {
       processingTimeMs: 0,
       featureVector: {},
       preprocessingSteps: [],
-      explanation: {},
+      explanation: { summary: "", featureImportance: [], shap: [], lime: [], saliency: [] },
       recommendations: []
     };
 

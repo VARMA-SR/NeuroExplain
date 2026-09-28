@@ -1308,7 +1308,7 @@ export function NeuroExplainApp() {
                 <div className="flex flex-wrap items-center gap-3">
                   <button
                     type="button"
-                    onClick={runAnalysis}
+                    onClick={() => runAnalysis()}
                     disabled={analysisStatus === "running"}
                     className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white border border-slate-200 px-5 py-3 text-sm font-semibold text-navy shadow-sm transition hover:scale-[1.01] hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
                   >
