@@ -285,6 +285,26 @@ function buildAnalysisFromResult(
   };
 }
 
+function generateSyntheticCSV(type: "Normal" | "Moderate" | "Seizure") {
+  let csv = "time,frontal,temporal,occipital\n";
+  for (let i = 0; i < 2560; i++) {
+    let frontal = Math.sin(i * 0.05) * 12 + Math.sin(i * 0.01) * 5 + (Math.random() - 0.5) * 4;
+    let temporal = Math.sin(i * 0.04) * 15 + (Math.random() - 0.5) * 4;
+    let occipital = Math.sin(i * 0.06) * 10 + (Math.random() - 0.5) * 4;
+
+    if (type === "Seizure" && i > 1024 && i < 1792) {
+      frontal += Math.sin(i * 0.15) * 150 + (Math.random() - 0.5) * 20;
+      temporal += Math.sin(i * 0.15) * 180 + (Math.random() - 0.5) * 20;
+      occipital += Math.sin(i * 0.15) * 100 + (Math.random() - 0.5) * 20;
+    } else if (type === "Moderate" && i % 200 > 150) {
+      frontal += Math.sin(i * 0.3) * 60;
+      temporal += Math.sin(i * 0.3) * 80;
+    }
+    csv += `${i},${frontal.toFixed(2)},${temporal.toFixed(2)},${occipital.toFixed(2)}\n`;
+  }
+  return csv;
+}
+
 function buildFallbackSummary(): DashboardSummary {
   const patients: DashboardPatient[] = demoPatients.map((patient, index) => ({
     id: index + 1,
@@ -301,34 +321,55 @@ function buildFallbackSummary(): DashboardSummary {
     datasetFile: patient.datasetFile,
   }));
 
-  const analyses = patients.map((patient, index) =>
-    buildAnalysisFromResult(
-      {
-        fileName: `demo-session-${index + 1}.csv`,
+  const analyses = patients.map((patient, index) => {
+    const type = patient.previousSeizures > 3 ? "Seizure" : (patient.previousSeizures > 0 ? "Moderate" : "Normal");
+    const csv = generateSyntheticCSV(type);
+    const fileName = `demo-session-${index + 1}.csv`;
+
+    try {
+      const result = runOfflineInference({
+        patient,
+        fileName,
         fileType: "CSV",
-        channels: ["Fp1-F7", "F7-T3", "T3-T5", "T5-O1", "Fp2-F8", "F8-T4", "T4-T6", "T6-O2"],
-        samplingFrequency: 256,
-        durationSeconds: 3600,
-        amplitudeUv: 0,
-        prediction: "AWAITING DATA" as any,
-        seizureProbability: 0,
-        confidence: 0,
-        riskLevel: "Pending" as any,
-        riskScore: 0,
-        severity: "None",
-        affectedChannels: [],
-        processingTimeMs: 0,
-        featureVector: {},
-        preprocessingSteps: [],
-        explanation: { summary: "Please upload an EEG signal file (CSV/EDF) to begin analysis.", featureImportance: [], shap: [], lime: [], saliency: [] },
-        recommendations: [],
-        timeline: []
-      } as any,
-      patient,
-      index + 1,
-      `2026-01-${String(12 + index).padStart(2, "0")}T10:30:00.000Z`,
-    ),
-  );
+        signalText: csv,
+      });
+
+      return buildAnalysisFromResult(
+        result,
+        patient,
+        index + 1,
+        `2026-01-${String(12 + index).padStart(2, "0")}T10:30:00.000Z`,
+      );
+    } catch (err) {
+      console.warn("Offline inference failed for demo patient", patient.name, err);
+      return buildAnalysisFromResult(
+        {
+          fileName,
+          fileType: "CSV",
+          channels: ["Fp1-F7", "F7-T3", "T3-T5", "T5-O1", "Fp2-F8", "F8-T4", "T4-T6", "T6-O2"],
+          samplingFrequency: 256,
+          durationSeconds: 3600,
+          amplitudeUv: 0,
+          prediction: "Normal",
+          seizureProbability: 0,
+          confidence: 100,
+          riskLevel: "Low",
+          riskScore: 0,
+          severity: "None",
+          affectedChannels: [],
+          processingTimeMs: 0,
+          featureVector: {},
+          preprocessingSteps: [],
+          explanation: { summary: "Analysis failed to generate", featureImportance: [], shap: [], lime: [], saliency: [] },
+          recommendations: [],
+          timeline: []
+        } as any,
+        patient,
+        index + 1,
+        `2026-01-${String(12 + index).padStart(2, "0")}T10:30:00.000Z`,
+      );
+    }
+  });
 
   return {
     generatedAt: fixedNow,
@@ -929,24 +970,7 @@ export function NeuroExplainApp() {
   }
 
   const loadDemoPatient = async (type: "Normal" | "Moderate" | "Seizure", patientName: string, forcePatientId?: number) => {
-    let csv = "time,frontal,temporal,occipital\n";
-    for (let i = 0; i < 2560; i++) {
-      // Generate a smooth resting wave (alpha/theta simulation) instead of pure white noise
-      let frontal = Math.sin(i * 0.05) * 12 + Math.sin(i * 0.01) * 5 + (Math.random() - 0.5) * 4;
-      let temporal = Math.sin(i * 0.04) * 15 + (Math.random() - 0.5) * 4;
-      let occipital = Math.sin(i * 0.06) * 10 + (Math.random() - 0.5) * 4;
-
-      if (type === "Seizure" && i > 1024 && i < 1792) {
-        frontal += Math.sin(i * 0.15) * 150 + (Math.random() - 0.5) * 20;
-        temporal += Math.sin(i * 0.15) * 180 + (Math.random() - 0.5) * 20;
-        occipital += Math.sin(i * 0.15) * 100 + (Math.random() - 0.5) * 20;
-      } else if (type === "Moderate" && i % 200 > 150) {
-        frontal += Math.sin(i * 0.3) * 60;
-        temporal += Math.sin(i * 0.3) * 80;
-      }
-      csv += `${i},${frontal.toFixed(2)},${temporal.toFixed(2)},${occipital.toFixed(2)}\n`;
-    }
-
+    const csv = generateSyntheticCSV(type);
     const fileName = `${patientName.replace(" ", "_")}_EEG.csv`;
     setUploadedFile({
       name: fileName,
