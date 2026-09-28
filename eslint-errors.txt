@@ -1,0 +1,126 @@
+
+> lint
+> eslint .
+
+
+C:\Users\tunas\Downloads\neuroexplain-source\src\components\neuro-explain-app.tsx
+   684:7    error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\tunas\Downloads\neuroexplain-source\src\components\neuro-explain-app.tsx:684:7
+  682 |         `Standard protocol followed for ${selectedPatient.age}-year-old ${selectedPatient.sex}. AI summary attached for primary physician review.`
+  683 |       ];
+> 684 |       setDoctorNote(notes[(selectedPatient.id + selectedPatient.previousSeizures) % notes.length]);
+      |       ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  685 |     }
+  686 |   }, [selectedPatient]);
+  687 |   // Only show analysis content once the user has uploaded a file or a run has completed  react-hooks/set-state-in-effect
+   893:75   error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\tunas\Downloads\neuroexplain-source\src\components\neuro-explain-app.tsx:893:75
+  891 |     for (let i = 0; i < 2560; i++) {
+  892 |         // Generate a smooth resting wave (alpha/theta simulation) instead of pure white noise
+> 893 |         let frontal = Math.sin(i * 0.05) * 12 + Math.sin(i * 0.01) * 5 + (Math.random() - 0.5) * 4;
+      |                                                                           ^^^^^^^^^^^^^ Cannot call impure function
+  894 |         let temporal = Math.sin(i * 0.04) * 15 + (Math.random() - 0.5) * 4;
+  895 |         let occipital = Math.sin(i * 0.06) * 10 + (Math.random() - 0.5) * 4;
+  896 |                                                                                                                                                                                                                                                                                                                            react-hooks/purity
+   894:51   error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\tunas\Downloads\neuroexplain-source\src\components\neuro-explain-app.tsx:894:51
+  892 |         // Generate a smooth resting wave (alpha/theta simulation) instead of pure white noise
+  893 |         let frontal = Math.sin(i * 0.05) * 12 + Math.sin(i * 0.01) * 5 + (Math.random() - 0.5) * 4;
+> 894 |         let temporal = Math.sin(i * 0.04) * 15 + (Math.random() - 0.5) * 4;
+      |                                                   ^^^^^^^^^^^^^ Cannot call impure function
+  895 |         let occipital = Math.sin(i * 0.06) * 10 + (Math.random() - 0.5) * 4;
+  896 |         
+  897 |         if (type === "Seizure" && i > 1024 && i < 1792) {                                                                                                                                                                                                                                                                                                                      react-hooks/purity
+   895:52   error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\tunas\Downloads\neuroexplain-source\src\components\neuro-explain-app.tsx:895:52
+  893 |         let frontal = Math.sin(i * 0.05) * 12 + Math.sin(i * 0.01) * 5 + (Math.random() - 0.5) * 4;
+  894 |         let temporal = Math.sin(i * 0.04) * 15 + (Math.random() - 0.5) * 4;
+> 895 |         let occipital = Math.sin(i * 0.06) * 10 + (Math.random() - 0.5) * 4;
+      |                                                    ^^^^^^^^^^^^^ Cannot call impure function
+  896 |         
+  897 |         if (type === "Seizure" && i > 1024 && i < 1792) {
+  898 |             frontal += Math.sin(i * 0.15) * 150 + (Math.random() - 0.5) * 20;                                                                                                                                                                                                                                                                                                                                      react-hooks/purity
+   898:52   error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\tunas\Downloads\neuroexplain-source\src\components\neuro-explain-app.tsx:898:52
+  896 |         
+  897 |         if (type === "Seizure" && i > 1024 && i < 1792) {
+> 898 |             frontal += Math.sin(i * 0.15) * 150 + (Math.random() - 0.5) * 20;
+      |                                                    ^^^^^^^^^^^^^ Cannot call impure function
+  899 |             temporal += Math.sin(i * 0.15) * 180 + (Math.random() - 0.5) * 20;
+  900 |             occipital += Math.sin(i * 0.15) * 100 + (Math.random() - 0.5) * 20;
+  901 |         } else if (type === "Moderate" && i % 200 > 150) {                                                                                                                                                                                                                                                                                                                                                                         react-hooks/purity
+   899:53   error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\tunas\Downloads\neuroexplain-source\src\components\neuro-explain-app.tsx:899:53
+  897 |         if (type === "Seizure" && i > 1024 && i < 1792) {
+  898 |             frontal += Math.sin(i * 0.15) * 150 + (Math.random() - 0.5) * 20;
+> 899 |             temporal += Math.sin(i * 0.15) * 180 + (Math.random() - 0.5) * 20;
+      |                                                     ^^^^^^^^^^^^^ Cannot call impure function
+  900 |             occipital += Math.sin(i * 0.15) * 100 + (Math.random() - 0.5) * 20;
+  901 |         } else if (type === "Moderate" && i % 200 > 150) {
+  902 |             frontal += Math.sin(i * 0.3) * 60;                                                                                                                                                                                                                                                                                                                                  react-hooks/purity
+   900:54   error    Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\tunas\Downloads\neuroexplain-source\src\components\neuro-explain-app.tsx:900:54
+  898 |             frontal += Math.sin(i * 0.15) * 150 + (Math.random() - 0.5) * 20;
+  899 |             temporal += Math.sin(i * 0.15) * 180 + (Math.random() - 0.5) * 20;
+> 900 |             occipital += Math.sin(i * 0.15) * 100 + (Math.random() - 0.5) * 20;
+      |                                                      ^^^^^^^^^^^^^ Cannot call impure function
+  901 |         } else if (type === "Moderate" && i % 200 > 150) {
+  902 |             frontal += Math.sin(i * 0.3) * 60;
+  903 |             temporal += Math.sin(i * 0.3) * 80;                                                                                                                                                                                                                                                                                                                                           react-hooks/purity
+   951:33   error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\tunas\Downloads\neuroexplain-source\src\components\neuro-explain-app.tsx:951:33
+  949 |         payload.result,
+  950 |         selectedPatient,
+> 951 |         payload.analysis?.id ?? Date.now(),
+      |                                 ^^^^^^^^^^ Cannot call impure function
+  952 |         payload.analysis?.createdAt ?? new Date().toISOString(),
+  953 |       );
+  954 |       const report: DashboardReport = {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              react-hooks/purity
+   955:35   error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\tunas\Downloads\neuroexplain-source\src\components\neuro-explain-app.tsx:955:35
+  953 |       );
+  954 |       const report: DashboardReport = {
+> 955 |         id: payload.report?.id ?? Date.now() + 1,
+      |                                   ^^^^^^^^^^ Cannot call impure function
+  956 |         reportNumber: payload.report?.reportNumber ?? `NXR-${new Date().getFullYear()}-${String(newAnalysis.id).padStart(5, "0")}`,
+  957 |         status: payload.report?.status ?? "Draft",
+  958 |         patientName: selectedPatient.name,                                                                                                                                                                                                                                                                                                                                                                                                                                      react-hooks/purity
+  1454:31   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @next/next/no-img-element
+  1620:148  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    react/no-unescaped-entities
+  1620:153  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    react/no-unescaped-entities
+  1620:207  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    react/no-unescaped-entities
+  1708:32   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @next/next/no-img-element
+
+✖ 14 problems (12 errors, 2 warnings)
+

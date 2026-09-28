@@ -173,6 +173,11 @@ a {
 }
 
 @media print {
+  @page {
+    margin: 0.5cm;
+    size: auto;
+  }
+
   body {
     background: white !important;
     color: #0f172a !important;

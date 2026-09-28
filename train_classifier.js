@@ -19,6 +19,7 @@ function extractFeatures(values) {
       zeroCrossings++;
     }
   }
+  zeroCrossings /= values.length;
 
   const entropyBuckets = new Array(12).fill(0);
   const min = Math.min(...centered);
@@ -82,6 +83,8 @@ if (cluster0_rms > cluster1_rms) {
 }
 
 console.log(`Auto-labeled: ${labels.filter(l => l === 0).length} Normal, ${labels.filter(l => l === 1).length} Seizure`);
+console.log('Cluster 0 RMS (Normal):', Math.min(cluster0_rms, cluster1_rms));
+console.log('Cluster 1 RMS (Seizure):', Math.max(cluster0_rms, cluster1_rms));
 
 // Step 2: Train Random Forest
 console.log('Training Random Forest Classifier...');

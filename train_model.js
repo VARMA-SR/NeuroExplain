@@ -22,6 +22,7 @@ function extractFeatures(values) {
       zeroCrossings++;
     }
   }
+  zeroCrossings /= values.length;
 
   const entropyBuckets = new Array(12).fill(0);
   const min = Math.min(...centered);
