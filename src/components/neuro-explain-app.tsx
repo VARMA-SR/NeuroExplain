@@ -1449,7 +1449,14 @@ export function NeuroExplainApp() {
                             <button
                               type="button"
                               key={patient.id}
-                              onClick={() => setSelectedPatientId(patient.id)}
+                              onClick={() => {
+                                setSelectedPatientId(patient.id);
+                                if (patientAnalysis.prediction === "AWAITING DATA" || patientAnalysis.prediction === "Pending") {
+                                  const type = patient.previousSeizures > 3 ? "Seizure" : (patient.previousSeizures > 0 ? "Moderate" : "Normal");
+                                  loadDemoPatient(type, patient.name, patient.id);
+                                  setActiveModule("#analysis");
+                                }
+                              }}
                               className={cx(
                                 "w-full rounded-3xl border p-4 text-left transition",
                                 selectedPatient?.id === patient.id ? "border-cyan-300/35 bg-dusty-blue/20" : "border-dusty-blue/30 bg-cream hover:bg-cream/[0.075]",
