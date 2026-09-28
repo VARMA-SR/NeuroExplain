@@ -964,46 +964,70 @@ export function NeuroExplainApp() {
     const targetPatientId = forcePatientId ?? selectedPatient?.id;
     if (!targetPatientId) return;
 
-    // If a specific patient is forced, update UI state immediately
     if (forcePatientId && forcePatientId !== selectedPatient?.id) {
       setSelectedPatientId(forcePatientId);
     }
 
     setAnalysisStatus("running");
+    
+    // Ensure we use the correct patient reference even if state hasn't updated yet
+    const activePatient = summary.patients.find(p => p.id === targetPatientId) || selectedPatient;
+    const fileName = overrideName || uploadedFile?.name || `simulated-eeg-${targetPatientId}.csv`;
+    const signalText = overrideSignal || uploadedFile?.signalText;
 
     try {
-      const response = await fetch("/api/neuro/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          patientId: targetPatientId,
-          fileName: overrideName || uploadedFile?.name || `simulated-eeg-${targetPatientId}.csv`,
+      let resultPayload: any;
+      try {
+        const response = await fetch("/api/neuro/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            patientId: targetPatientId,
+            fileName,
+            fileType: "CSV",
+            signalText,
+          }),
+        });
+        if (!response.ok) throw new Error("Backend API failed");
+        const payload = (await response.json()) as AnalyzeResponse;
+        if (!payload.ok || !payload.result) throw new Error("Invalid payload");
+        resultPayload = payload;
+      } catch (apiErr) {
+        console.warn("API unavailable, falling back to local offline ML inference.");
+        const { runOfflineInference } = await import("@/lib/neuro-ai");
+        const result = runOfflineInference({
+          patient: activePatient,
+          fileName,
           fileType: "CSV",
-          signalText: overrideSignal || uploadedFile?.signalText,
-        }),
-      });
-      const payload = (await response.json()) as AnalyzeResponse;
-      if (!response.ok || !payload.ok || !payload.result) {
-        throw new Error(payload.error || "Analysis failed");
+          signalText,
+        });
+        resultPayload = {
+          ok: true,
+          result,
+          patient: activePatient,
+          analysis: { id: Date.now(), createdAt: new Date().toISOString() },
+          report: null
+        };
       }
 
       const newAnalysis = buildAnalysisFromResult(
-        payload.result,
-        selectedPatient,
-        payload.analysis?.id ?? Date.now(),
-        payload.analysis?.createdAt ?? new Date().toISOString(),
+        resultPayload.result,
+        resultPayload.patient || activePatient,
+        resultPayload.analysis?.id ?? Date.now(),
+        resultPayload.analysis?.createdAt ?? new Date().toISOString(),
       );
+      
       const report: DashboardReport = {
-        id: payload.report?.id ?? Date.now() + 1,
-        reportNumber: payload.report?.reportNumber ?? `NXR-${new Date().getFullYear()}-${String(newAnalysis.id).padStart(5, "0")}`,
-        status: payload.report?.status ?? "Draft",
-        patientName: selectedPatient.name,
-        createdAt: payload.report?.createdAt ?? newAnalysis.createdAt,
+        id: resultPayload.report?.id ?? Date.now() + 1,
+        reportNumber: resultPayload.report?.reportNumber ?? `NXR-${new Date().getFullYear()}-${String(newAnalysis.id).padStart(5, "0")}`,
+        status: resultPayload.report?.status ?? "Draft",
+        patientName: newAnalysis.patientName,
+        createdAt: resultPayload.report?.createdAt ?? newAnalysis.createdAt,
       };
 
       setSummary((current) => ({
         ...current,
-        analyses: [newAnalysis, ...current.analyses],
+        analyses: [newAnalysis, ...current.analyses.filter(a => !(a.patientId === newAnalysis.patientId && (a.prediction as string) === "AWAITING DATA"))],
         reports: [report, ...current.reports],
         stats: {
           ...current.stats,
@@ -1017,7 +1041,7 @@ export function NeuroExplainApp() {
       setReportNotification("Analysis complete — report is ready. Click here to view.");
     } catch (err: any) {
       setAnalysisStatus("idle");
-      setReportNotification(err.message || "Pipeline Error: Could not connect to ML backend.");
+      setReportNotification(err.message || "Pipeline Error: Could not execute ML inference.");
       setTimeout(() => setReportNotification(null), 5000);
     }
   }
