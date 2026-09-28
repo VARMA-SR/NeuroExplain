@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  // @ts-ignore - Bypass NextConfig strict typing for eslint config
   eslint: {
     ignoreDuringBuilds: true,
   },
