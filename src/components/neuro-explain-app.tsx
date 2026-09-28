@@ -1451,7 +1451,7 @@ export function NeuroExplainApp() {
                               key={patient.id}
                               onClick={() => {
                                 setSelectedPatientId(patient.id);
-                                if (patientAnalysis.prediction === "AWAITING DATA" || patientAnalysis.prediction === "Pending") {
+                                if ((patientAnalysis.prediction as string) === "AWAITING DATA" || (patientAnalysis.prediction as string) === "Pending") {
                                   const type = patient.previousSeizures > 3 ? "Seizure" : (patient.previousSeizures > 0 ? "Moderate" : "Normal");
                                   loadDemoPatient(type, patient.name, patient.id);
                                   setActiveModule("#analysis");
